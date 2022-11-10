@@ -53,10 +53,10 @@ while True:
 
     if blobs1:
         for b in blobs1:
-            tmp=img.draw_rectangle(b[0:4],color=(153,204,51))
-            tmp=img.draw_cross(b[5], b[6],color=(153,204,51))
-            c=img.get_pixel(b[5], b[6])
-            img.draw_string(60, 50, "GREEN",color=(0,0,0), scale=2)
+            tmp=img.draw_rectangle(b[0:4],color=(153,204,51))        #四角を描画
+            tmp=img.draw_cross(b[5], b[6],color=(153,204,51))        #×マークを描画
+            c=img.get_pixel(b[5], b[6])                              #ピクセル取得
+            img.draw_string(60, 50, "GREEN",color=(0,0,0), scale=2)  #文字描画
 
     if blobs2:
         for b in blobs2:
