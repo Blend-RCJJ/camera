@@ -22,7 +22,8 @@ while True:
     img2 = img1.copy()
     #img = sensor.snapshot()
     #lines = img.find_lines()            #線を探す
-    #img.draw_rectangle(0,0,50,50)       #デフォルトは黒で描画，塗りつぶしなし
+    #img.draw_line(x0,y0,x1,y1,color,thickness)                 #線を描画
+    #img.draw_rectangle(0,0,50,50)                              #デフォルトは黒で描画，塗りつぶしなし
     #img.draw_rectangle(150,100, 50,10,(0,0,0), fill=True)      #黒で描画して塗りつぶす
     #img.draw_rectangle(20,20,100,80,(0,0,200), thickness=3)    #青で描画，線の太さは3ピクセル
     #lcd.display(img)
