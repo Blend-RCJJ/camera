@@ -23,34 +23,11 @@ while False:
 
 target_lab_threshold = (36, 69, 4, 32, -67, -41)     #青色
 while True:
-    #uart_out.write('HappyDesu\n')
     img=sensor.snapshot()
 
     blobs = img.find_blobs([target_lab_threshold], x_stride = 2, y_stride = 2, pixels_threshold = 100, merge = True, margin = 20)
     if blobs:
         uart_out.write('Detected\n')
-        #max_area = 0
-        #target = blobs[0]
-        #for b in blobs:
-            #if b.area() > max_area:
-                #max_area = b.area()
-                #target = b
-        #if uart_out.read(4096):
-            #area = target.area()
-            #dx = 120 - target[6]
-            #hexlist = [(dx >> 8) & 0xFF, dx & 0xFF, (area >> 16) & 0xFF, (area >> 8) & 0xFF, area & 0xFF]
-            #uart_out.write(bytes(hexlist))
-        #else:
-            #pass
-        #print(target.area())
-        #tmp=img.draw_rectangle(target[0:4])
-        #tmp=img.draw_cross(target[5], target[6])
-        #c=img.get_pixel(target[5], target[6])
 
     else:
          uart_out.write('NOT Detected\n')
-        #if uart_out.read(4096):
-            #hexlist = [0x80, 0x00, 0x00, 0x00, 0x00]
-            #uart_out.write(bytes(hexlist))
-        #else:
-            #pass
