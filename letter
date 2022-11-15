@@ -3,6 +3,7 @@ import image
 import lcd
 import time
 
+
 lcd.init(freq=15000000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
@@ -14,34 +15,39 @@ black_threshold = (0, 9, -3, 4, -2, 7)
 
 while True:
     img=sensor.snapshot()
-    lines = img.find_lines()
+    #lines = img.find_lines()
     #img2 = img.copy((70,50,img.width(), img.height()-70))
 
-    #blobs4 = img2.find_blobs([black_threshold])
+    blobs4 = img.find_blobs([black_threshold])
 
-    #lines = img2.find_lines()
+    lines = img.find_lines(threshold = 3000)#threshold=5000, merge_distance=5, max_theta_difference=2
+
+    #lines2 = set(lines)
+
+    #if blobs4:
+        #for b in blobs4:
+            #print(len(lines))
+            #for item in lines:
+                ##print(len(item))
+                ##if(item[4] > 4):
+                #img2 = img.draw_line(item[0], item[1], item[2], item[3], color=(0,255,0), thickness=5)
+                #lcd.display(img2)
+                    #tmp=img.draw_rectangle(b[0:4],color=(0,255,0))
+                    #tmp=img.draw_cross(b[5], b[6],color=(0,255,0))
+                    #c=img.get_pixel(b[5], b[6])
+                    #img.draw_string(60, 150, "BLACK",color=(255,255,255), scale=2)
 
 
     if blobs4:
-        for b in blobs4:
-            img.draw_line(item[0], item[1], item[2], item[3], color=(0,255,0), thickness=5)
-            tmp=img.draw_rectangle(b[0:4],color=(0,255,0))
-            tmp=img.draw_cross(b[5], b[6],color=(0,255,0))
-            c=img.get_pixel(b[5], b[6])
-            img.draw_string(60, 150, "BLACK",color=(255,255,255), scale=2)
-
-    #if blobs4:
+        A = len(lines)
         #for item in lines:
-            #if(item[0] > 5):
-                ##img2.draw_string(100, 80, "black line of H",color=(0,255,0), scale=2)
-                #print("black line of H")
-            #if(item[0] < 5 and item[0] > 0):
-                ##img2.draw_string(100, 80, "black line of H",color=(0,255,0), scale=2)
-                #print("black line of U")
-            #else:
-                ##img2.draw_string(100, 80, "black line of H",color=(0,255,0), scale=2)
-                #print("black line of S")
-
-
-
-    lcd.display(img2)
+            #print(item[0])
+        if(A >= 2):
+            img.draw_string(100, 80, "H",color=(0,255,0), scale=5)
+            print("H")
+        if(A == 1):
+            img.draw_string(100, 80, "U",color=(0,255,0), scale=5)
+            print("U")
+        if(A == 0):
+            img.draw_string(100, 80, "S",color=(0,255,0), scale=5)
+            print("S")
