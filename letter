@@ -7,7 +7,7 @@ import time
 lcd.init(freq=15000000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
-sensor.set_framesize(sensor.QVGA)
+sensor.set_framesize(sensor.QQVGA)
 sensor.run(1)
 sensor.set_vflip(180)
 
@@ -22,6 +22,7 @@ while True:
 
     lines = img.find_lines(threshold = 2000)#threshold=5000, merge_distance=5, max_theta_difference=2
     circles = img.find_circles()
+    #rects = img.find_rects()
 
     #lines2 = set(lines)
 
@@ -31,6 +32,8 @@ while True:
             #for item in lines:
             #print(len(circles))
             #for item in circles:
+            #print(len(rects))
+            #for item in rects:
                 ##print(len(item))
                 ##if(item[4] > 4):
                 #img2 = img.draw_line(item[0], item[1], item[2], item[3], color=(0,255,0), thickness=5)
@@ -45,19 +48,22 @@ while True:
     if blobs4:
         A = len(lines)
         B = len(circles)
+
+        print(A)
+        print(B)
         #for item in lines:
             #print(item[0])
-        if(A >= 4):
-            if(B <= 3):
-                img.draw_string(100, 80, "H",color=(0,255,0), scale=5)
+        if(A >= 2):
+            if(B <= 2):
+                img.draw_string(40, 20, "H",color=(0,255,0), scale=5)
                 print("H")
-            #if(A == 4):
-            if(B >= 4 and B <=10):
-                img.draw_string(100, 80, "U",color=(0,255,0), scale=5)
+            if(B >= 4):
+                img.draw_string(40, 20, "U",color=(0,255,0), scale=5)
                 print("U")
         if(A == 1):
-            if(B >= 11):
-                img.draw_string(100, 80, "S",color=(0,255,0), scale=5)
+            if(B >= 7):
+                img.draw_string(40, 20, "S",color=(0,255,0), scale=5)
                 print("S")
 
     lcd.display(img)
+
