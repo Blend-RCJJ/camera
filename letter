@@ -20,8 +20,8 @@ while True:
 
     blobs4 = img.find_blobs([black_threshold])
 
-    lines = img.find_lines(threshold = 2000)#threshold=5000, merge_distance=5, max_theta_difference=2
-    circles = img.find_circles()
+    lines = img.find_lines(threshold = 2000, max_theta_difference = 10)#threshold=5000, merge_distance=5, max_theta_difference=2
+    circles = img.find_circles(threshold = 2000)
     #rects = img.find_rects()
 
     #lines2 = set(lines)
@@ -34,8 +34,6 @@ while True:
             #for item in circles:
             #print(len(rects))
             #for item in rects:
-                ##print(len(item))
-                ##if(item[4] > 4):
                 #img2 = img.draw_line(item[0], item[1], item[2], item[3], color=(0,255,0), thickness=5)
 
     #lcd.display(img2)
@@ -53,14 +51,20 @@ while True:
         print(B)
         #for item in lines:
             #print(item[0])
-        if(A >= 2):
-            if(B <= 2):
-                img.draw_string(40, 20, "H",color=(0,255,0), scale=5)
-                print("H")
-            if(B >= 4):
+        if(A >= 3):
+            #if(B <= 2):
+                #img.draw_string(40, 20, "H",color=(0,255,0), scale=5)
+                #print("H")
+            if(B >= 4 and B <= 6):
                 img.draw_string(40, 20, "U",color=(0,255,0), scale=5)
                 print("U")
-        if(A == 1):
+            else:
+                img.draw_string(40, 20, "H",color=(0,255,0), scale=5)
+                print("H")
+        if(A == 1 or A == 2):
+            if(B >= 3 and B <= 6):
+                img.draw_string(40, 20, "U",color=(0,255,0), scale=5)
+                print("U")
             if(B >= 7):
                 img.draw_string(40, 20, "S",color=(0,255,0), scale=5)
                 print("S")
