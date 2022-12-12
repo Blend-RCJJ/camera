@@ -39,6 +39,7 @@ sensor.set_vflip(180)
 green_threshold  =  (56, 97, -29, -17, 34, 51)
 red_threshold  =  (59, 72, 38, 61, -13, 33)
 blue_threshold  =  (36, 69, 4, 32, -67, -41)
+
 black_threshold = (0, 9, -3, 4, -2, 7)
 
 while True:
@@ -60,13 +61,17 @@ while True:
             #c=img.get_pixel(b[5], b[6])
             img = img.draw_string(40, 20, "GREEN",color=(0,0,0), scale=2)
 
+        continue
+
     if blobs2:
         for b in blobs2:
             uart_out.write('RED\n')
             tmp=img.draw_rectangle(b[0:4],color=(255,0,0))
             #tmp=img.draw_cross(b[5], b[6],color=(255,0,0))
             #c=img.get_pixel(b[5], b[6])
-            img = img.draw_string(40, 30, "RED",color=(0,0,0), scale=2)
+            img = img.draw_string(40, 20, "RED",color=(0,0,0), scale=2)
+
+        continue
 
     if blobs3:
         for b in blobs3:
@@ -74,11 +79,12 @@ while True:
             tmp=img.draw_rectangle(b[0:4],color=(0,255,255))
             #tmp=img.draw_cross(b[5], b[6],color=(0,255,255))
             #c=img.get_pixel(b[5], b[6])
-            img = img.draw_string(40, 40, "BLUE",color=(0,0,0), scale=2)
+            img = img.draw_string(40, 20, "BLUE",color=(0,0,0), scale=2)
+
+        continue
 
     if blobs4:
         A = len(lines)
-        print(A)
 
         if(A >= 6):
             uart_out.write('H\n')
