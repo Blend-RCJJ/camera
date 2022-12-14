@@ -1,7 +1,6 @@
 #refer  to http://blog.sipeed.com/p/675.html
 import sensor
 import json
-import math
 import time
 
 from machine import UART
