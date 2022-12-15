@@ -1,6 +1,7 @@
 import sensor
 import image
 import lcd
+import json
 import time
 import utime
 from machine import UART
@@ -36,11 +37,17 @@ sensor.set_framesize(sensor.QVGA)
 sensor.run(1)
 sensor.set_vflip(180)
 
-green_threshold  =  (56, 97, -29, -17, 34, 51)
+green_threshold  =  (0, 33, -26, -10, -4, 25)#(56, 97, -29, -17, 34, 51)
 red_threshold  =  (59, 72, 38, 61, -13, 33)
 blue_threshold  =  (36, 69, 4, 32, -67, -41)
 
-black_threshold = (0, 9, -3, 4, -2, 7)
+black_threshold = (0, 14, -2, 4, -1, 7)
+
+target_letter_position_x = 160 #
+target_letter_position_y = 120 # 中心:120、顔の位置を高くしたいときは小さくする
+
+focus_counter = 0
+list = []
 
 while True:
     img=sensor.snapshot()
@@ -52,52 +59,93 @@ while True:
     blobs4 = img.find_blobs([black_threshold])
 
     lines = img.find_lines(threshold = 1500, max_theta_difference = 10)
+    A = len(lines)
 
     if blobs1:
         for b in blobs1:
-            uart_out.write('GREEN\n')
-            tmp=img.draw_rectangle(b[0:4],color=(153,204,51))
-            #tmp=img.draw_cross(b[5], b[6],color=(153,204,51))
-            #c=img.get_pixel(b[5], b[6])
-            img = img.draw_string(40, 20, "GREEN",color=(0,0,0), scale=2)
+            if (b[2]*b[3]>15000):
+                uart_out.write('GREEN\n')
+                tmp=img.draw_rectangle(b[0:4],color=(153,204,51))
+                img=img.draw_string(40, 20, "GREEN",color=(0,0,0), scale=2)
 
-        continue
+            continue
 
     if blobs2:
         for b in blobs2:
-            uart_out.write('RED\n')
-            tmp=img.draw_rectangle(b[0:4],color=(255,0,0))
-            #tmp=img.draw_cross(b[5], b[6],color=(255,0,0))
-            #c=img.get_pixel(b[5], b[6])
-            img = img.draw_string(40, 20, "RED",color=(0,0,0), scale=2)
+            if (b[2]*b[3]>15000):
+                uart_out.write('RED\n')
+                tmp=img.draw_rectangle(b[0:4],color=(255,0,0))
+                img = img.draw_string(40, 20, "RED",color=(0,0,0), scale=2)
 
-        continue
+            continue
 
     if blobs3:
         for b in blobs3:
-            uart_out.write('BLUE\n')
-            tmp=img.draw_rectangle(b[0:4],color=(0,255,255))
-            #tmp=img.draw_cross(b[5], b[6],color=(0,255,255))
-            #c=img.get_pixel(b[5], b[6])
-            img = img.draw_string(40, 20, "BLUE",color=(0,0,0), scale=2)
+            if (b[2]*b[3]>15000):
+                uart_out.write('BLUE\n')
+                tmp=img.draw_rectangle(b[0:4],color=(0,255,255))
+                img = img.draw_string(40, 20, "BLUE",color=(0,0,0), scale=2)
 
-        continue
+            continue
 
     if blobs4:
-        A = len(lines)
+        for i in reversed(blobs4):
+            if (i[2]*i[3]>20000):
+                data = json.loads(json.dumps(i))
+                letter_center_x = round(data['x'] + data['w'] / 2)
+                letter_center_y = round(data['y'] + data['h'] / 2)
+                print(str(letter_center_x) + ',' + str(letter_center_y))
+                if abs(letter_center_x - target_letter_position_x) >= 40:
+                    focus_counter = 0
+                    if letter_center_x > target_letter_position_x:
+                        uart_out.write('LEFT\n')
+                        print('L')
 
-        if(A >= 6):
-            uart_out.write('H\n')
-            img.draw_string(40, 20, "H",color=(0,255,0), scale=5)
-            print("H")
-        if(A == 3 or A == 4):
-            uart_out.write('U\n')
-            img.draw_string(40,20,"U",color = (0,255,0),scale = 5)
-            print("U")
-        if(A <= 1):
-            uart_out.write('S\n')
-            img.draw_string(40,20,"S",color = (0,255,0),scale = 5)
+                    elif letter_center_x < target_letter_position_x:
+                        uart_out.write('RIGHT\n')
+                        print('R')
 
+                elif abs(letter_center_y - target_letter_position_y) >= 40:
+                    if letter_center_y > target_letter_position_y:
+                        uart_out.write('DOWN\n')
+                        print('down')
 
-    lcd.display(img)
+                    elif letter_center_y < target_letter_position_y:
+                        uart_out.write('UP\n')
+                        print('up')
+
+                else:
+                    uart_out.write('SHOT\n')
+                    print('shot')
+
+                    focus_counter += 1
+                    if focus_counter > 3:
+                        focus_counter = 0
+
+                        if(A >= 6):
+                            uart_out.write('H\n')
+                            img.draw_string(40,20, "H",color = (0,255,0),scale = 5)
+                            print("H")
+                            list.append('H')
+                        if(A == 3 or A == 4):
+                            uart_out.write('U\n')
+                            img.draw_string(40,20,"U",color = (0,255,0),scale = 5)
+                            print("U")
+                            list.append('U')
+                        if(A <= 1):
+                            uart_out.write('S\n')
+                            img.draw_string(40,20,"S",color = (0,255,0),scale = 5)
+                            print('S')
+                            list.append('S')
+
+                        continue
+
+                    if len(list) == 10:
+                        uart_out.write(str(list)+'\n')
+                        print(list)
+                        time.sleep(5)
+                        list.clear()
+
+                a = img.draw_rectangle(i.rect())
+                a = img.draw_circle(target_letter_position_x, target_letter_position_y, 5)
 
