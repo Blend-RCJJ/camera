@@ -12,23 +12,29 @@ fm.register(34,fm.fpioa.UART1_TX)
 fm.register(35,fm.fpioa.UART1_RX)
 uart_out = UART(UART.UART1, 115200, 8, None, 1, timeout=1000, read_buf_len=4096)
 
-"""
+
 from modules import ws2812
 
-led_io, led_num = 8, 1
+ws = ws2812(8,1)
 
-ws = ws2812(led_io, led_num)
-r,g,b =100,100,100
-ws.set_led(0, (r,g,b))
-ws.display()
+LED = 0
 
-time.sleep_ms(10000)
+for LED in range(5):
+    #ws = ws2812(led_io, led_num)
+    r,g,b = 100,100,100
+    ws.set_led(0, (r,g,b))
+    ws.display()
+    time.sleep(0.1)
 
-ws = ws2812(led_io, led_num)
-r,g,b =0,0,0
-ws.set_led(0, (r,g,b))
-ws.display()
-"""
+    #ws = ws2812(led_io, led_num)
+    r,g,b = 0,0,0
+    ws.set_led(0, (r,g,b))
+    ws.display()
+    time.sleep(0.1)
+
+    print(str(LED))
+    #LED += 1
+
 
 lcd.init(freq=15000000)
 sensor.reset()
@@ -61,10 +67,12 @@ while True:
     lines = img.find_lines(threshold = 1500, max_theta_difference = 10)
     A = len(lines)
 
+    uart_out.write('neko\n')
+
     if blobs1:
         for b in blobs1:
             if (b[2]*b[3]>15000):
-                uart_out.write('GREEN\n')
+                uart_out.write('G\n')
                 tmp=img.draw_rectangle(b[0:4],color=(153,204,51))
                 img=img.draw_string(40, 20, "GREEN",color=(0,0,0), scale=2)
 
@@ -73,7 +81,7 @@ while True:
     if blobs2:
         for b in blobs2:
             if (b[2]*b[3]>15000):
-                uart_out.write('RED\n')
+                uart_out.write('R\n')
                 tmp=img.draw_rectangle(b[0:4],color=(255,0,0))
                 img = img.draw_string(40, 20, "RED",color=(0,0,0), scale=2)
 
@@ -82,7 +90,7 @@ while True:
     if blobs3:
         for b in blobs3:
             if (b[2]*b[3]>15000):
-                uart_out.write('BLUE\n')
+                uart_out.write('B\n')
                 tmp=img.draw_rectangle(b[0:4],color=(0,255,255))
                 img = img.draw_string(40, 20, "BLUE",color=(0,0,0), scale=2)
 
@@ -98,16 +106,16 @@ while True:
                 if abs(letter_center_x - target_letter_position_x) >= 40:
                     focus_counter = 0
                     if letter_center_x > target_letter_position_x:
-                        uart_out.write('LEFT\n')
+                        uart_out.write('L\n')
                         print('L')
 
                     elif letter_center_x < target_letter_position_x:
-                        uart_out.write('RIGHT\n')
+                        uart_out.write('R\n')
                         print('R')
 
                 elif abs(letter_center_y - target_letter_position_y) >= 40:
                     if letter_center_y > target_letter_position_y:
-                        uart_out.write('DOWN\n')
+                        uart_out.write('D\n')
                         print('down')
 
                     elif letter_center_y < target_letter_position_y:
@@ -148,4 +156,6 @@ while True:
 
                 a = img.draw_rectangle(i.rect())
                 a = img.draw_circle(target_letter_position_x, target_letter_position_y, 5)
+
+
 
