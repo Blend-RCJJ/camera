@@ -8,6 +8,7 @@ from machine import UART
 from Maix import GPIO
 from fpioa_manager import *
 
+#uart setup
 fm.register(34,fm.fpioa.UART1_TX)
 fm.register(35,fm.fpioa.UART1_RX)
 uart_out = UART(UART.UART1, 115200, 8, None, 1, timeout=1000, read_buf_len=4096)
@@ -17,8 +18,7 @@ from modules import ws2812
 
 ws = ws2812(8,1)
 
-LED = 0
-
+#Lチカ　5回
 for LED in range(5):
     #ws = ws2812(led_io, led_num)
     r,g,b = 100,100,100
@@ -35,7 +35,7 @@ for LED in range(5):
     print(str(LED))
     #LED += 1
 
-
+#camera setup
 lcd.init(freq=15000000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
@@ -43,7 +43,8 @@ sensor.set_framesize(sensor.QVGA)
 sensor.run(1)
 sensor.set_vflip(180)
 
-green_threshold  =  (0, 33, -26, -10, -4, 25)#(56, 97, -29, -17, 34, 51)
+#color setup
+green_threshold  =  (0, 33, -26, -10, -4, 25) #(56, 97, -29, -17, 34, 51)
 red_threshold  =  (59, 72, 38, 61, -13, 33)
 blue_threshold  =  (36, 69, 4, 32, -67, -41)
 
@@ -69,6 +70,7 @@ while True:
 
     uart_out.write('neko\n')
 
+    #color検出
     if blobs1:
         for b in blobs1:
             if (b[2]*b[3]>15000):
@@ -96,6 +98,7 @@ while True:
 
             continue
 
+    #letter検出(H,U,S)
     if blobs4:
         for i in reversed(blobs4):
             if (i[2]*i[3]>20000):
@@ -113,7 +116,7 @@ while True:
                         uart_out.write('R\n')
                         print('R')
 
-                elif abs(letter_center_y - target_letter_position_y) >= 40:
+                elif abs(letter_center_y - target_letter_position_y) >= 50:
                     if letter_center_y > target_letter_position_y:
                         uart_out.write('D\n')
                         print('down')
@@ -127,15 +130,15 @@ while True:
                     print('shot')
 
                     focus_counter += 1
-                    if focus_counter > 3:
+                    if focus_counter > 2:
                         focus_counter = 0
 
-                        if(A >= 6):
+                        if(A >= 4):
                             uart_out.write('H\n')
                             img.draw_string(40,20, "H",color = (0,255,0),scale = 5)
                             print("H")
                             list.append('H')
-                        if(A == 3 or A == 4):
+                        if(A == 2):
                             uart_out.write('U\n')
                             img.draw_string(40,20,"U",color = (0,255,0),scale = 5)
                             print("U")
