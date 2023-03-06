@@ -53,13 +53,13 @@ list = []
 ledStatus = 0
 
 while True:
-    ledStatus += 1
-    if ledStatus % 2:
-        ws.set_led(0, (100,100,100))
-        ws.display()
-    else :
-        ws.set_led(0, (0,0,0))
-        ws.display()
+    #ledStatus += 1
+    #if ledStatus % 2:
+        #ws.set_led(0, (100,100,100))
+        #ws.display()
+    #else :
+        #ws.set_led(0, (0,0,0))
+        #ws.display()
 
     img=sensor.snapshot()
 
@@ -80,7 +80,7 @@ while True:
                 tmp=img.draw_rectangle(b[0:4],color=(153,204,51))
                 img=img.draw_string(40, 20, "GREEN",color=(0,0,0), scale=2)
 
-            continue
+        continue
 
     if blobs2:
         for b in blobs2:
@@ -89,7 +89,7 @@ while True:
                 tmp=img.draw_rectangle(b[0:4],color=(255,0,0))
                 img = img.draw_string(40, 20, "RED",color=(0,0,0), scale=2)
 
-            continue
+        continue
 
     if blobs3:
         for b in blobs3:
@@ -98,12 +98,12 @@ while True:
                 tmp=img.draw_rectangle(b[0:4],color=(0,255,255))
                 img = img.draw_string(40, 20, "YELLOW",color=(0,0,0), scale=2)
 
-            continue
+        continue
 
     #letter setup
     if blobs4:
         for i in reversed(blobs4):
-            if (i[2]*i[3]>20000):
+            if (i[2]*i[3]>15000):
                 data = json.loads(json.dumps(i))
                 letter_center_x = round(data['x'] + data['w'] / 2)
                 letter_center_y = round(data['y'] + data['h'] / 2)
@@ -151,7 +151,7 @@ while True:
                             print('S')
                             list.append('S')
 
-                        continue
+                        #continue
 
                     if len(list) == 7:
                         uart_out.write(str(list)+'\n')
@@ -161,6 +161,5 @@ while True:
 
                 a = img.draw_rectangle(i.rect())
                 a = img.draw_circle(target_letter_position_x, target_letter_position_y, 5)
-
 
 
