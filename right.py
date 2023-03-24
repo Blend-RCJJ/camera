@@ -49,7 +49,7 @@ led = 0
 green = (36, 46, -38, -24, -14, 14)
 red = (8, 76, 51, 67, 16, 54)
 yellow = (64, 76, -20, -5, 49, 64)
-#shiro = (51, 70, -12, 10, -15, 9)
+black = (0, 0, 0, -128, 0, -128)
 
 try:
     task = kpu.load("/sd/model.kmodel")
@@ -71,11 +71,12 @@ while(True):
 
     gc.collect()
     img = sensor.snapshot()
+    img = img.flood_fill(100,100,seed_threshold = False,invert = False,clear_background = False)
 
     GREEN = img.find_blobs([green])
     RED = img.find_blobs([red])
     YELLOW = img.find_blobs([yellow])
-    #SHIRO = img.find_blobs([shiro])
+    BLACK = img.find_blobs([black])
 
     if GREEN:
         for b in reversed(GREEN):
@@ -100,27 +101,27 @@ while(True):
 
                 list = []
 
-    if RED:
-        for b in reversed(RED):
-            if (b[2]*b[3] >= 300):
-                #list.append("R")
-                #A = len(list)
+    #if RED:
+        #for b in reversed(RED):
+            #if (b[2]*b[3] >= 300):
+                ##list.append("R")
+                ##A = len(list)
 
-                #if A == 2:
-                uart.write('R\n')
-                print("R")
-                r,g,b = 255,0,0
-                ws.set_led(0, (r,g,b))
-                ws.display()
+                ##if A == 2:
+                #uart.write('R\n')
+                #print("R")
+                #r,g,b = 255,0,0
+                #ws.set_led(0, (r,g,b))
+                #ws.display()
 
-                time.sleep(6)
-                r,g,b = 0,0,0
-                ws.set_led(0, (r,g,b))
-                ws.display()
-                uart.write('n\n')
-                time.sleep(3)
+                #time.sleep(6)
+                #r,g,b = 0,0,0
+                #ws.set_led(0, (r,g,b))
+                #ws.display()
+                #uart.write('n\n')
+                #time.sleep(3)
 
-                list = []
+                #list = []
 
     if YELLOW:
         for b in reversed(YELLOW):
@@ -155,18 +156,19 @@ while(True):
     fmap = kpu.forward(task, img2)
     plist = fmap[:]
     #pmax = max(plist)
-    pmax1 = plist[0]
+    pmax11 = plist[0]
     pmax2 = plist[1]
     pmax3 = plist[2]
     #print(plist)
+    pmax1 = round(pmax11,5)
 
-    #if SHIRO:
-        #for b in reversed(SHIRO):
+    #if BLACK:
+        #for b in reversed(BLACK):
             #if (b[2]*b[3] >= 20 and b[2]*b[3] <= 90):
-    if pmax1 >= 0.90 and pmax1 <= 1.0:
+    if pmax1 >= 0.9 and pmax1 <= 1.0:
         #rects = img.find_rects()#threshold = 1500
         #B = len(rects)
-        max_index = plist.index(pmax1)
+        max_index = plist.index(pmax11)
         mozi = labels[max_index].strip()
         print(labels[max_index].strip())
 
@@ -174,21 +176,21 @@ while(True):
         A = len(list)
 
         #if B <= 2:
-        if A == 2:
-            uart.write("H\n")
-            r,g,b = 255,0,60
-            ws.set_led(0, (r,g,b))
-            ws.display()
+        #if A == 2:
+        uart.write("H\n")
+        r,g,b = 255,0,60
+        ws.set_led(0, (r,g,b))
+        ws.display()
 
-            time.sleep(6)
-            r,g,b = 0,0,0
-            ws.set_led(0, (r,g,b))
-            ws.display()
+        time.sleep(6)
+        r,g,b = 0,0,0
+        ws.set_led(0, (r,g,b))
+        ws.display()
 
-            uart.write('n\n')
-            time.sleep(3.5)
+        uart.write('n\n')
+        time.sleep(3.5)
 
-            list = []
+        list = []
 
     if pmax2 >= 0.90 and pmax2 <= 1.0:
         max_index = plist.index(pmax2)
@@ -247,6 +249,6 @@ while(True):
 
         if led % 5 == 0:
             list = []
-        elif list == "S" and A == 1:
-            a = 1
+        #elif list == "S" and A == 1:
+            #a = 1
 

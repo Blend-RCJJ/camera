@@ -100,27 +100,27 @@ while(True):
 
                 list = []
 
-    if RED:
-        for b in reversed(RED):
-            if (b[2]*b[3] >= 600):
-                #list.append("R")
-                #A = len(list)
+    #if RED:
+        #for b in reversed(RED):
+            #if (b[2]*b[3] >= 600):
+                ##list.append("R")
+                ##A = len(list)
 
-                #if A == 2:
-                uart.write('R\n')
-                print("R")
-                r,g,b = 255,0,0
-                ws.set_led(0, (r,g,b))
-                ws.display()
+                ##if A == 2:
+                #uart.write('R\n')
+                #print("R")
+                #r,g,b = 255,0,0
+                #ws.set_led(0, (r,g,b))
+                #ws.display()
 
-                time.sleep(6)
-                r,g,b = 0,0,0
-                ws.set_led(0, (r,g,b))
-                ws.display()
-                uart.write('n\n')
-                time.sleep(3)
+                #time.sleep(6)
+                #r,g,b = 0,0,0
+                #ws.set_led(0, (r,g,b))
+                #ws.display()
+                #uart.write('n\n')
+                #time.sleep(3)
 
-                list = []
+                #list = []
 
     if YELLOW:
         for b in reversed(YELLOW):
@@ -155,10 +155,11 @@ while(True):
     fmap = kpu.forward(task, img2)
     plist = fmap[:]
     #pmax = max(plist)
-    pmax1 = plist[0]
+    pmax11 = plist[0]
     pmax2 = plist[1]
     pmax3 = plist[2]
     #print(plist)
+    pmax1 = round(pmax11,5)
 
     #if SHIRO:
         #for b in reversed(SHIRO):
@@ -166,7 +167,7 @@ while(True):
     if pmax1 >= 0.90 and pmax1 <= 1.0:
         #rects = img.find_rects()#threshold = 1500
         #B = len(rects)
-        max_index = plist.index(pmax1)
+        max_index = plist.index(pmax11)
         mozi = labels[max_index].strip()
         print(labels[max_index].strip())
 
@@ -215,7 +216,7 @@ while(True):
 
             list = []
 
-    if pmax3 >= 0.99999 and pmax3 <= 1.0:
+    if pmax3 >= 0.999995 and pmax3 <= 1.0:
         max_index = plist.index(pmax3)
         mozi = labels[max_index].strip()
         print(labels[max_index].strip())
