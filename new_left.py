@@ -13,8 +13,6 @@ fm.register(34,fm.fpioa.UART1_TX)
 fm.register(35,fm.fpioa.UART1_RX)
 uart = UART(UART.UART1, 115200, 8, None, 1, timeout=1000, read_buf_len=4096)
 
-led = 0
-
 input_size = (224, 224)
 labels = ['H', 'S', 'U']
 anchors = [2.72, 2.84, 2.12, 2.56, 2.06, 2.19, 2.91, 2.02, 2.53, 2.25]
