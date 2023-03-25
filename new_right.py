@@ -84,7 +84,7 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
                 for obj in objects:
                     if obj.classid() == 2:
                         print(obj.value())
-                        if obj.value() >= 0.80:
+                        if obj.value() >= 0.85:
 
                             uart.write('U')
                             print("U")
