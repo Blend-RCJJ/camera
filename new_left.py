@@ -34,16 +34,15 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
     #sensor.set_vflip(180)
     sensor.run(1)
     sensor.set_auto_gain(10)
-    sensor.set_auto_whitebal(False, (180,150,200))
+    sensor.set_auto_whitebal(False, (160,110,200))
     sensor.set_auto_exposure(False)
     gc.collect()
 
-    green = (36, 46, -38, -24, -14, 14)
-    red = (8, 76, 51, 67, 16, 54)
-    yellow = (64, 76, -20, -5, 49, 64)
+    green = (57, 64, -46, -39, 15, 24)
+    red = (55, 59, 64, 70, 61, 69)
+    yellow = (89, 97, -24, -6, 81, 88)
 
     led = 0
-    list = []
 
     if not labels:
         with open('labels.txt','r') as f:
@@ -65,13 +64,12 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
         kpu.init_yolo2(task, 0.5, 0.3, 5, anchors) # threshold:[0,1], nms_value: [0, 1]
         while(True):
             led += 1
-
-            if led % 2 == 1:
+            if led == 1:
                 r,g,b = 100,100,100
                 ws.set_led(0, (r,g,b))
                 ws.display()
+                time.sleep(1)
 
-            if led % 2 == 0:
                 r,g,b = 0,0,0
                 ws.set_led(0, (r,g,b))
                 ws.display()
@@ -84,9 +82,9 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
             if objects:
                 for obj in objects:
                     if obj.classid() == 2:
-                        if obj.value() >= 0.7:
+                        if obj.value() >= 0.80:
 
-                            uart.write('U\n')
+                            uart.write('U')
                             print("U")
                             r,g,b = 255,255,255
                             ws.set_led(0, (r,g,b))
@@ -97,49 +95,49 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
                             ws.set_led(0, (r,g,b))
                             ws.display()
 
-                            uart.write('n\n')
+                            uart.write('N')
                             #time.sleep(2.3)
 
                     if obj.classid() == 0:
+                        #print(obj.value())
+                        if obj.value() >= 0.70:
 
-                        uart.write('H\n')
-                        print("H")
-                        r,g,b = 255,0,60
-                        ws.set_led(0, (r,g,b))
-                        ws.display()
+                            uart.write('H')
+                            print("H")
+                            r,g,b = 255,0,60
+                            ws.set_led(0, (r,g,b))
+                            ws.display()
 
-                        time.sleep(1)
-                        r,g,b = 0,0,0
-                        ws.set_led(0, (r,g,b))
-                        ws.display()
+                            time.sleep(1)
+                            r,g,b = 0,0,0
+                            ws.set_led(0, (r,g,b))
+                            ws.display()
 
-                        uart.write('n\n')
-                        #time.sleep(3.5)
+                            uart.write('N')
+
 
                     if obj.classid() == 1:
+                        #print(obj.value())
+                        if obj.value() >= 0.70:
 
-                        uart.write('S\n')
-                        print("S")
-                        r,g,b = 0,0,255
-                        ws.set_led(0, (r,g,b))
-                        ws.display()
+                            uart.write('S')
+                            print("S")
+                            r,g,b = 0,0,255
+                            ws.set_led(0, (r,g,b))
+                            ws.display()
 
-                        time.sleep(1)
-                        r,g,b = 0,0,0
-                        ws.set_led(0, (r,g,b))
-                        ws.display()
+                            time.sleep(1)
+                            r,g,b = 0,0,0
+                            ws.set_led(0, (r,g,b))
+                            ws.display()
 
-                        uart.write('n\n')
-                        #time.sleep(3)
+                            uart.write('N')
 
             if GREEN:
                 for b in reversed(GREEN):
-                    if (b[2]*b[3] >= 300):
-                        #list.append("G")
-                        #A = len(list)
+                    if (b[2]*b[3] >= 500):
 
-                        #if A == 2:
-                        uart.write('G\n')
+                        uart.write('G')
                         print("G")
                         r,g,b = 0,255,0
                         ws.set_led(0, (r,g,b))
@@ -150,19 +148,13 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
                         ws.set_led(0, (r,g,b))
                         ws.display()
 
-                        uart.write('n\n')
-                        #time.sleep(2.3)
-
-                        #list = []
+                        uart.write('N')
 
             if RED:
                 for b in reversed(RED):
-                    if (b[2]*b[3] >= 300):
-                        #list.append("R")
-                        #A = len(list)
+                    if (b[2]*b[3] >= 600):
 
-                        #if A == 2:
-                        uart.write('R\n')
+                        uart.write('R')
                         print("R")
                         r,g,b = 255,0,0
                         ws.set_led(0, (r,g,b))
@@ -172,19 +164,13 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
                         r,g,b = 0,0,0
                         ws.set_led(0, (r,g,b))
                         ws.display()
-                        uart.write('n\n')
-                        #time.sleep(3)
-
-                        list = []
+                        uart.write('N')
 
             if YELLOW:
                 for b in reversed(YELLOW):
-                    if (b[2]*b[3] >= 300):
-                        #list.append("Y")
-                        #A = len(list)
+                    if (b[2]*b[3] >= 400):
 
-                        #if A == 2:
-                        uart.write('Y\n')
+                        uart.write('Y')
                         print("Y")
                         r,g,b = 255,125,0
                         ws.set_led(0, (r,g,b))
@@ -194,10 +180,11 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
                         r,g,b = 0,0,0
                         ws.set_led(0, (r,g,b))
                         ws.display()
-                        uart.write('n\n')
-                        #time.sleep(3)
+                        uart.write('N')
 
-                        #list = []
+            else:
+                uart.write("N")
+                print("n")
 
     except Exception as e:
         raise e
